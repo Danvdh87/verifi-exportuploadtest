@@ -76,11 +76,19 @@ export class AppComponent {
 
   }
 
-  onFileChange(evt: any) {
-    /* wire up file reader */
+  exportLocalXlsx(): void {
+    this.workbook.xlsx.writeBuffer().then(data => {
+      const blob = new Blob([data], { type: this.blobType });
+      console.log(data);
+      console.log(blob);
+      this.excelService.exportAsExcelFile(data, 'sample');
+      //FileSaver.saveAs(blob, 'test');
+    });
 
-    // What we will need to do is figure out how to upload our own file already in the project.
+  }
 
+  uploadFile(evt: any) { 
+    // Read the data out of an uploaded file.
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) throw new Error('Cannot use multiple files');
     const reader: FileReader = new FileReader();
