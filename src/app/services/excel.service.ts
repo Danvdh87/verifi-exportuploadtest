@@ -33,7 +33,8 @@ export class ExcelService {
   public readLocalFile()
   {
     //console.log('TODO: Read local file.');
-     this.http.get('/assets/Book11.xlsx', { responseType: 'blob' })
+     //this.http.get('/assets/Book11.xlsx', { responseType: 'blob' })
+      this.http.get('/assets/test.txt', { responseType: 'blob' })
       .subscribe(res => {
         const reader = new FileReader();
         reader.onloadend = () => {

@@ -77,7 +77,6 @@ export class AppComponent {
   }
 
   exportLocalXlsx(): void {
-
     this.excelService.readLocalFile();
     // this.workbook.xlsx.writeBuffer().then(data => {
     //   const blob = new Blob([data], { type: this.blobType });
