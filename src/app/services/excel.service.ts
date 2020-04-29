@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { HttpClient } from '@angular/common/http';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
 
 @Injectable()
 export class ExcelService {
+
+  private http: HttpClient
 
   constructor() { }
 
@@ -27,4 +30,19 @@ export class ExcelService {
     FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 
+  public readLocalFile()
+  {
+    //console.log('TODO: Read local file.');
+     this.http.get('/assets/Book11.xlsx', { responseType: 'blob' })
+      .subscribe(res => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          var base64data = reader.result;                
+              console.log(base64data);
+        }
+
+        reader.readAsDataURL(res); 
+        console.log(res);
+      });
+  }
 }

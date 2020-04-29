@@ -77,13 +77,15 @@ export class AppComponent {
   }
 
   exportLocalXlsx(): void {
-    this.workbook.xlsx.writeBuffer().then(data => {
-      const blob = new Blob([data], { type: this.blobType });
-      console.log(data);
-      console.log(blob);
-      this.excelService.exportAsExcelFile(data, 'sample');
-      //FileSaver.saveAs(blob, 'test');
-    });
+
+    this.excelService.readLocalFile();
+    // this.workbook.xlsx.writeBuffer().then(data => {
+    //   const blob = new Blob([data], { type: this.blobType });
+    //   console.log(data);
+    //   console.log(blob);
+    //   this.excelService.exportAsExcelFile(data, 'sample');
+    //   //FileSaver.saveAs(blob, 'test');
+    // });
 
   }
 
@@ -103,7 +105,8 @@ export class AppComponent {
       console.log('Now the buffer has been loaded try and open the file.');
 
       wb.xlsx.load(buffer).then(workbook => {
-      console.log(workbook, 'workbook instance')
+      // Usually results in an error of being too large to output to the console.
+      //console.log(workbook, 'workbook instance') 
       workbook.eachSheet((sheet, id) => {
         sheet.eachRow((row, rowIndex) => {
           console.log(row.values, rowIndex)
