@@ -3,6 +3,7 @@ import { ExcelService } from './services/excel.service';
 import * as Excel from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import * as FileSaver from 'file-saver';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'my-app',
@@ -14,7 +15,7 @@ export class AppComponent {
   workbook: ExcelProper.Workbook = new Excel.Workbook();
   blobType: string = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
-  constructor(private excelService: ExcelService) {
+  constructor(private excelService: ExcelService, private http: HttpClient) {
     let worksheet = this.workbook.addWorksheet('My Sheet', {
       properties: {
         defaultRowHeight: 100,
@@ -77,6 +78,10 @@ export class AppComponent {
   }
 
   exportLocalXlsx(): void {
+    http.get(ROOT_URL + '/ReportBrowser/GetGenericExcelTemplate', { responseType: 'arraybuffer' })
+
+
+
     //this.excelService.readLocalFile();
     // this.workbook.xlsx.writeBuffer().then(data => {
     //   const blob = new Blob([data], { type: this.blobType });
