@@ -73,9 +73,9 @@ export class AppComponent {
     });
   }
 
-  exportLocalXlsx(): void {    
+  exportLocalXlsx(): void {
     // Retreive the excel template file from the angular app.
-    // TODO: Replace local file with with webapi URL.
+    // TODO: Replace local file with webapi URL at a later stage.
      this.http.get('./assets/Book11.xlsx', { responseType: 'arraybuffer' })
       .subscribe((file:ArrayBuffer)  => {       
           // Now prep the excel template file so it can be loaded into Exceljs.
