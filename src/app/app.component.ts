@@ -61,36 +61,49 @@ export class AppComponent {
 
     // Set a specific row height
     row.height = 120;
-
-
-
-
   }
+  
   exportAsXLSX(): void {
     this.workbook.xlsx.writeBuffer().then(data => {
       const blob = new Blob([data], { type: this.blobType });
+      console.log('exportAsXLSX');
       console.log(data);
       console.log(blob);
-      // this.excelService.exportAsExcelFile(data, 'sample');
       FileSaver.saveAs(blob, 'test');
     });
 
   }
 
-  exportLocalXlsx(): void {
-    http.get(ROOT_URL + '/ReportBrowser/GetGenericExcelTemplate', { responseType: 'arraybuffer' })
+  exportLocalXlsx(): void {    
+    // Retreive the excel template file from the angular app.
+     this.http.get('./assets/Book11.xlsx', { responseType: 'arraybuffer' })
+      .subscribe((file: ArrayBuffer)  => {       
+          console.log(file);
+          // Now prep the excel template file so it can be loaded into Exceljs.
+          let xlsxArray = new Uint8Array(file);
+          let xlsxBlob = new Blob([xlsxArray.buffer], 
+                          { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
+          // Load excel template file into a new Exceljs workbook.
+          let wb = new Excel.Workbook();
+          
+          // Import data into the excel template.
+          let ws = wb.addWorksheet('Sheet2');
 
+           ws.columns = [{ header: 'Id', key: 'id', width: 10 },
+                         { header: 'Name', key: 'name', width: 32 }];
 
-    //this.excelService.readLocalFile();
-    // this.workbook.xlsx.writeBuffer().then(data => {
-    //   const blob = new Blob([data], { type: this.blobType });
-    //   console.log(data);
-    //   console.log(blob);
-    //   this.excelService.exportAsExcelFile(data, 'sample');
-    //   //FileSaver.saveAs(blob, 'test');
-    // });
+          // Add rows.
+          ws.addRow({ id: 1, name: 'John' });
+          ws.addRow({ id: 2, name: 'Jane' });
 
+          // Now Download the modified excel template file.
+          wb.xlsx.writeBuffer().then(data => {
+                    const blob = new Blob([data], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+                    FileSaver.saveAs(blob, 'Book1');
+                });
+      });
   }
 
   uploadFile(evt: any) { 
