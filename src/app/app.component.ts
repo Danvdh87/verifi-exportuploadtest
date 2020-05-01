@@ -62,7 +62,7 @@ export class AppComponent {
     // Set a specific row height
     row.height = 120;
   }
-  
+
   exportAsXLSX(): void {
     this.workbook.xlsx.writeBuffer().then(data => {
       const blob = new Blob([data], { type: this.blobType });
@@ -71,27 +71,41 @@ export class AppComponent {
       console.log(blob);
       FileSaver.saveAs(blob, 'test');
     });
-
   }
 
   exportLocalXlsx(): void {    
     // Retreive the excel template file from the angular app.
+    // TODO: Replace local file with with webapi URL.
      this.http.get('./assets/Book11.xlsx', { responseType: 'arraybuffer' })
-      .subscribe((file: ArrayBuffer)  => {       
-          console.log(file);
+      .subscribe((file:any)  => {       
           // Now prep the excel template file so it can be loaded into Exceljs.
           let xlsxArray = new Uint8Array(file);
-          let xlsxBlob = new Blob([xlsxArray.buffer], 
-                          { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          let xlsxBlob = new Blob([xlsxArray.buffer],
+                          { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
 
-          // Load excel template file into a new Exceljs workbook.
-          let wb = new Excel.Workbook();
+          console.log(file);
+          console.log(xlsxBlob);
+          console.log(xlsxArray);
           
+          // Load excel template file into a new Exceljs workbook.
+          let wb : Excel.Workbook = new Excel.Workbook();
+          //wb.xlsx.load(file);
+          //wb.xlsx.load(xlsxArray.buffer);
+          wb.xlsx.load(xlsxArray);
+          //wb.xlsx.readFile('/assets/Book11.xlsx') // Results in corrupt file.
+          
+          // Output sheets to console.
+          wb.eachSheet((sheet, id) => {
+            sheet.eachRow((row, rowIndex) => {
+              console.log(row.values, rowIndex)
+            })
+          });
+
           // Import data into the excel template.
           let ws = wb.addWorksheet('Sheet2');
 
-           ws.columns = [{ header: 'Id', key: 'id', width: 10 },
-                         { header: 'Name', key: 'name', width: 32 }];
+          ws.columns = [{ header: 'Id', key: 'id', width: 10 },
+                        { header: 'Name', key: 'name', width: 32 }];
 
           // Add rows.
           ws.addRow({ id: 1, name: 'John' });
@@ -101,7 +115,7 @@ export class AppComponent {
           wb.xlsx.writeBuffer().then(data => {
                     const blob = new Blob([data], {
                         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-                    FileSaver.saveAs(blob, 'Book1');
+                    FileSaver.saveAs(blob, 'Book11');
                 });
       });
   }
